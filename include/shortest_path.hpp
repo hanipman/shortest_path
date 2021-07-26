@@ -6,6 +6,7 @@
 #include <queue>
 #include <map>
 #include <vector>
+#include <set>
 
 #define INF 0x3f3f3f3f
 
@@ -45,6 +46,12 @@ namespace shortest_path {
 		const std::vector<std::pair<node, node>>& at(int i);
 
 		/*
+			Check if adjacency graph is empty.
+			@return bool
+		*/
+		bool empty();
+
+		/*
 			Iterator point to beginning of graph
 			@return iterator of std::map.begin()
 		*/
@@ -64,10 +71,22 @@ namespace shortest_path {
 		@param src integer id of the source node
 		@param dest integer id of the destination node
 		@param g Graph object containing adjacency graph
-		@param p Parent map used to contain the closest parent of each node
-		@return on success, returns node id of destination mode, -1 if not found
+		@param path vector containing relevent nodes
+		@return returns the total cost of path on success, -1 otherwise
 	*/
 	int dijkstras_shortest_path(int src, int dest, Graph& g, std::vector<int>& path);
+
+	/*
+		Runs Dijkstras shortest path algorithm over from a single source to multiple
+		destinations. Each destination found is treated as the source for the next
+		iteration.
+		@param src_node integer id of the source node
+		@param dest_list set of ids of destination node
+		@param g Graph object containing adjacency graph
+		@param path vector containing relevant nodes
+		@return returns the total cost of path on success, -1 otherwise
+	*/
+	int single_source_multi_destination(int src_node, std::set<int> dest_list, Graph& g, std::vector<int>& path);
 
 	/*
 		Recursively fill vector with path from source node to destination node

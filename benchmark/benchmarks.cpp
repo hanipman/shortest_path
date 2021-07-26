@@ -37,7 +37,7 @@ void init()
 }
 
 
-static void BM_Graph(benchmark::State& state)
+static void BM_dijkstras_shortest_path(benchmark::State& state)
 {
 	init();
 	for (auto _ : state) {
@@ -46,4 +46,16 @@ static void BM_Graph(benchmark::State& state)
 	}
 }
 
-BENCHMARK(BM_Graph)->Arg(nodes::B)->Arg(nodes::C)->Arg(nodes::D)->Arg(nodes::E)->Arg(nodes::F)->Arg(nodes::G)->Arg(nodes::H)->Arg(nodes::I);
+BENCHMARK(BM_dijkstras_shortest_path)->Arg(nodes::B)->Arg(nodes::C)->Arg(nodes::D)->Arg(nodes::E)->Arg(nodes::F)->Arg(nodes::G)->Arg(nodes::H)->Arg(nodes::I);
+
+static void BM_single_source_multi_destination(benchmark::State& state)
+{
+	init();
+	for (auto _ : state) {
+		std::vector<int> path;
+		std::set<int> dest{ (int)state.range(0), (int)state.range(1) };
+		single_source_multi_destination(nodes::A, dest, g, path);
+	}
+}
+
+BENCHMARK(BM_single_source_multi_destination)->Args({nodes::H, nodes::F})->Args({nodes::C, nodes::F});

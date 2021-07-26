@@ -39,7 +39,7 @@ TEST_CASE( "Graph members", "[Graph]" )
 	}
 }
 
-TEST_CASE( "Shortest path correctness", "[Shortest Path]") 
+TEST_CASE( "Shortest path correctness", "[Shortest Path Correctness]") 
 {
 	Graph g = Graph();
 
@@ -62,10 +62,11 @@ TEST_CASE( "Shortest path correctness", "[Shortest Path]")
 		int dest_node = nodes::A;
 		std::vector<int> path;
 
-		dijkstras_shortest_path(nodes::A, dest_node, g, path);
+		int res = dijkstras_shortest_path(nodes::A, dest_node, g, path);
 
 		std::vector<int> expected{ 0 };
 
+		REQUIRE(res == 0);
 		REQUIRE(path == expected);
 	}
 
@@ -74,11 +75,11 @@ TEST_CASE( "Shortest path correctness", "[Shortest Path]")
 		int dest_node = nodes::E;
 		std::vector<int> path;
 
-		dijkstras_shortest_path(nodes::A, dest_node, g, path);
+		int res = dijkstras_shortest_path(nodes::A, dest_node, g, path);
 
 		std::vector<int> expected{ 0, 7, 6, 5, 4 };
 
-		REQUIRE(path.size() == 5);
+		REQUIRE(res == 23);
 		REQUIRE(path == expected);
 	}
 	
@@ -87,13 +88,44 @@ TEST_CASE( "Shortest path correctness", "[Shortest Path]")
 		int dest_node = nodes::B;
 		std::vector<int> path;
 
-		dijkstras_shortest_path(nodes::F, dest_node, g, path);
+		int res = dijkstras_shortest_path(nodes::F, dest_node, g, path);
 
 		std::vector<int> expected{ 5, 2, 1 };
 
-		REQUIRE(path.size() == 3);
+		REQUIRE(res == 12);
 		REQUIRE(path == expected);
 	}
+}
+
+TEST_CASE( "Dijkstras algorithm failure", "[Shortest Path Failure]" )
+{
+	Graph g = Graph();
+
+	std::vector<int> path;
+
+	int res = dijkstras_shortest_path(nodes::A, nodes::B, g, path);
+
+	REQUIRE(res == -1);
+	REQUIRE(path.size() == 0);
+
+	g.addEdge(g.createNode(0, nodes::A), g.createNode(4, nodes::B));
+	g.addEdge(g.createNode(0, nodes::A), g.createNode(8, nodes::H));
+	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::C));
+	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::H));
+	g.addEdge(g.createNode(8, nodes::C), g.createNode(7, nodes::D));
+	g.addEdge(g.createNode(8, nodes::C), g.createNode(4, nodes::F));
+	g.addEdge(g.createNode(7, nodes::D), g.createNode(9, nodes::E));
+	g.addEdge(g.createNode(7, nodes::D), g.createNode(4, nodes::F));
+	g.addEdge(g.createNode(9, nodes::E), g.createNode(4, nodes::F));
+	g.addEdge(g.createNode(4, nodes::F), g.createNode(2, nodes::G));
+	g.addEdge(g.createNode(2, nodes::G), g.createNode(8, nodes::H));
+	g.addEdge(g.createNode(2, nodes::G), g.createNode(2, nodes::I));
+	g.addEdge(g.createNode(8, nodes::H), g.createNode(2, nodes::I));
+
+	res = dijkstras_shortest_path(25, nodes::B, g, path);
+	
+	REQUIRE(res == -1);
+	REQUIRE(path.size() == 0);
 }
 
 TEST_CASE( "Shortest path with non consecutive node IDs", "[Node ID]" )
@@ -121,10 +153,40 @@ TEST_CASE( "Shortest path with non consecutive node IDs", "[Node ID]" )
 
 	std::vector<int> path;
 	
-	dijkstras_shortest_path(301, 346, g, path);
+	int res = dijkstras_shortest_path(301, 346, g, path);
 
 	std::vector<int> expected{ 301, 323, 346 };
 
-	REQUIRE(path.size() == 3);
+	REQUIRE(res == 4);
+	REQUIRE(path == expected);
+}
+
+TEST_CASE( "Single source multi destination shortest path correctness", "[SSMD]" )
+{
+	Graph g = Graph();
+
+	g.addEdge(g.createNode(0, nodes::A), g.createNode(4, nodes::B));
+	g.addEdge(g.createNode(0, nodes::A), g.createNode(8, nodes::H));
+	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::C));
+	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::H));
+	g.addEdge(g.createNode(8, nodes::C), g.createNode(7, nodes::D));
+	g.addEdge(g.createNode(8, nodes::C), g.createNode(4, nodes::F));
+	g.addEdge(g.createNode(7, nodes::D), g.createNode(9, nodes::E));
+	g.addEdge(g.createNode(7, nodes::D), g.createNode(4, nodes::F));
+	g.addEdge(g.createNode(9, nodes::E), g.createNode(4, nodes::F));
+	g.addEdge(g.createNode(4, nodes::F), g.createNode(2, nodes::G));
+	g.addEdge(g.createNode(2, nodes::G), g.createNode(8, nodes::H));
+	g.addEdge(g.createNode(2, nodes::G), g.createNode(2, nodes::I));
+	g.addEdge(g.createNode(8, nodes::H), g.createNode(2, nodes::I));
+
+	std::vector<int> path;
+
+	std::set<int> dest{ nodes::D, nodes::G };
+
+	std::vector<int> expected{ 0, 3, 5, 6, 7 };
+	
+	int res = single_source_multi_destination(nodes::A, dest, g, path);
+
+	REQUIRE(res == 21);
 	REQUIRE(path == expected);
 }
