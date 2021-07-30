@@ -3,39 +3,19 @@
 #include <iostream>
 #include <exception>
 
-shortest_path::Graph::Graph() {}
-
-shortest_path::node shortest_path::Graph::createNode(int weight, int id)
+shortest_path::node shortest_path::createNode(int weight, int id)
 {
 	return std::make_pair(weight, id);
 }
 
-void shortest_path::Graph::addEdge(shortest_path::node u, shortest_path::node v)
+void shortest_path::addEdge(shortest_path::adj_graph& g, shortest_path::node u, shortest_path::node v)
 {
-	adj[u.second].push_back(std::make_pair(u, v));
-	adj[v.second].push_back(std::make_pair(v, u));
-}
-
-const std::vector<std::pair<shortest_path::node, shortest_path::node>>& shortest_path::Graph::at(int i)
-{
-	return adj.at(i);
-}
-
-bool shortest_path::Graph::empty()
-{
-	return adj.empty();
-}
-
-std::map<int, std::vector<std::pair<shortest_path::node, shortest_path::node>>>::iterator shortest_path::Graph::begin() {
-	return adj.begin();
-}
-
-std::map<int, std::vector<std::pair<shortest_path::node, shortest_path::node>>>::iterator shortest_path::Graph::end() {
-	return adj.end();
+	g[u.second].push_back(std::make_pair(u, v));
+	g[v.second].push_back(std::make_pair(v, u));
 }
 
 // Prints shortest path from src to dest
-int shortest_path::dijkstras_shortest_path(int src, int dest, shortest_path::Graph& g, std::vector<int>& path)
+int shortest_path::dijkstras_shortest_path(int src, int dest, shortest_path::adj_graph& g, std::vector<int>& path)
 {
 	if (g.empty())
 	{
@@ -121,7 +101,7 @@ void shortest_path::createPath(int dest, const std::map<int, int>& p, std::vecto
 	path.push_back(dest);
 }
 
-int shortest_path::single_source_multi_destination(int src_node, std::set<int> dest_list, shortest_path::Graph& g, std::vector<int>& path)
+int shortest_path::single_source_multi_destination(int src_node, std::set<int> dest_list, shortest_path::adj_graph& g, std::vector<int>& path)
 {
 	if (g.empty())
 	{

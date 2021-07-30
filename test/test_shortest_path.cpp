@@ -21,41 +21,41 @@ enum nodes
 
 TEST_CASE( "Graph members", "[Graph]" )
 {
-	Graph g = Graph();
+	adj_graph g;
 
 	SECTION( "test node creation" )
 	{
-		node n = g.createNode(1, 2);
+		node n = createNode(1, 2);
 		REQUIRE(n.first == 1);
 		REQUIRE(n.second == 2);
 	}
 
 	SECTION( "test edge creation" )
 	{
-		node a = g.createNode(1, 2);
-		node b = g.createNode(3, 4);
-		g.addEdge(a, b);
+		node a = createNode(1, 2);
+		node b = createNode(3, 4);
+		addEdge(g, a, b);
 		REQUIRE(g.at(2).front() == std::make_pair(a, b));
 	}
 }
 
 TEST_CASE( "Shortest path correctness", "[Shortest Path Correctness]") 
 {
-	Graph g = Graph();
+	adj_graph g;
 
-	g.addEdge(g.createNode(0, nodes::A), g.createNode(4, nodes::B));
-	g.addEdge(g.createNode(0, nodes::A), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::C));
-	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(8, nodes::C), g.createNode(7, nodes::D));
-	g.addEdge(g.createNode(8, nodes::C), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(7, nodes::D), g.createNode(9, nodes::E));
-	g.addEdge(g.createNode(7, nodes::D), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(9, nodes::E), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(4, nodes::F), g.createNode(2, nodes::G));
-	g.addEdge(g.createNode(2, nodes::G), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(2, nodes::G), g.createNode(2, nodes::I));
-	g.addEdge(g.createNode(8, nodes::H), g.createNode(2, nodes::I));
+	addEdge(g, createNode(0, nodes::A), createNode(4, nodes::B));
+	addEdge(g, createNode(0, nodes::A), createNode(8, nodes::H));
+	addEdge(g, createNode(4, nodes::B), createNode(8, nodes::C));
+	addEdge(g, createNode(4, nodes::B), createNode(8, nodes::H));
+	addEdge(g, createNode(8, nodes::C), createNode(7, nodes::D));
+	addEdge(g, createNode(8, nodes::C), createNode(4, nodes::F));
+	addEdge(g, createNode(7, nodes::D), createNode(9, nodes::E));
+	addEdge(g, createNode(7, nodes::D), createNode(4, nodes::F));
+	addEdge(g, createNode(9, nodes::E), createNode(4, nodes::F));
+	addEdge(g, createNode(4, nodes::F), createNode(2, nodes::G));
+	addEdge(g, createNode(2, nodes::G), createNode(8, nodes::H));
+	addEdge(g, createNode(2, nodes::G), createNode(2, nodes::I));
+	addEdge(g, createNode(8, nodes::H), createNode(2, nodes::I));
 
 	SECTION( "Dijkstras correctness: A -> A" )
 	{
@@ -99,7 +99,7 @@ TEST_CASE( "Shortest path correctness", "[Shortest Path Correctness]")
 
 TEST_CASE( "Dijkstras algorithm failure", "[Shortest Path Failure]" )
 {
-	Graph g = Graph();
+	adj_graph g;
 
 	std::vector<int> path;
 
@@ -108,19 +108,19 @@ TEST_CASE( "Dijkstras algorithm failure", "[Shortest Path Failure]" )
 	REQUIRE(res == -1);
 	REQUIRE(path.size() == 0);
 
-	g.addEdge(g.createNode(0, nodes::A), g.createNode(4, nodes::B));
-	g.addEdge(g.createNode(0, nodes::A), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::C));
-	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(8, nodes::C), g.createNode(7, nodes::D));
-	g.addEdge(g.createNode(8, nodes::C), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(7, nodes::D), g.createNode(9, nodes::E));
-	g.addEdge(g.createNode(7, nodes::D), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(9, nodes::E), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(4, nodes::F), g.createNode(2, nodes::G));
-	g.addEdge(g.createNode(2, nodes::G), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(2, nodes::G), g.createNode(2, nodes::I));
-	g.addEdge(g.createNode(8, nodes::H), g.createNode(2, nodes::I));
+	addEdge(g, createNode(0, nodes::A), createNode(4, nodes::B));
+	addEdge(g, createNode(0, nodes::A), createNode(8, nodes::H));
+	addEdge(g, createNode(4, nodes::B), createNode(8, nodes::C));
+	addEdge(g, createNode(4, nodes::B), createNode(8, nodes::H));
+	addEdge(g, createNode(8, nodes::C), createNode(7, nodes::D));
+	addEdge(g, createNode(8, nodes::C), createNode(4, nodes::F));
+	addEdge(g, createNode(7, nodes::D), createNode(9, nodes::E));
+	addEdge(g, createNode(7, nodes::D), createNode(4, nodes::F));
+	addEdge(g, createNode(9, nodes::E), createNode(4, nodes::F));
+	addEdge(g, createNode(4, nodes::F), createNode(2, nodes::G));
+	addEdge(g, createNode(2, nodes::G), createNode(8, nodes::H));
+	addEdge(g, createNode(2, nodes::G), createNode(2, nodes::I));
+	addEdge(g, createNode(8, nodes::H), createNode(2, nodes::I));
 
 	res = dijkstras_shortest_path(25, nodes::B, g, path);
 	
@@ -130,26 +130,26 @@ TEST_CASE( "Dijkstras algorithm failure", "[Shortest Path Failure]" )
 
 TEST_CASE( "Shortest path with non consecutive node IDs", "[Node ID]" )
 {
-	Graph g = Graph();
-	node heidel = g.createNode(0, 301);
-	node moretti = g.createNode(2, 323);
-	node costa = g.createNode(2, 322);
-	node central = g.createNode(3, 304);
-	node northern = g.createNode(2, 346);
-	node eastern = g.createNode(3, 309);
-	node ruins = g.createNode(1, 345);
-	node southern = g.createNode(3, 305);
+	adj_graph g;
+	node heidel = createNode(0, 301);
+	node moretti = createNode(2, 323);
+	node costa = createNode(2, 322);
+	node central = createNode(3, 304);
+	node northern = createNode(2, 346);
+	node eastern = createNode(3, 309);
+	node ruins = createNode(1, 345);
+	node southern = createNode(3, 305);
 	
-	g.addEdge(heidel, costa);
-	g.addEdge(heidel, moretti);
-	g.addEdge(costa, central);
-	g.addEdge(central, northern);
-	g.addEdge(moretti, northern);
-	g.addEdge(moretti, eastern);
-	g.addEdge(northern, eastern);
-	g.addEdge(central, ruins);
-	g.addEdge(ruins, southern);
-	g.addEdge(eastern, southern);
+	addEdge(g, heidel, costa);
+	addEdge(g, heidel, moretti);
+	addEdge(g, costa, central);
+	addEdge(g, central, northern);
+	addEdge(g, moretti, northern);
+	addEdge(g, moretti, eastern);
+	addEdge(g, northern, eastern);
+	addEdge(g, central, ruins);
+	addEdge(g, ruins, southern);
+	addEdge(g, eastern, southern);
 
 	std::vector<int> path;
 	
@@ -163,21 +163,21 @@ TEST_CASE( "Shortest path with non consecutive node IDs", "[Node ID]" )
 
 TEST_CASE( "Single source multi destination shortest path correctness", "[SSMD]" )
 {
-	Graph g = Graph();
+	adj_graph g;
 
-	g.addEdge(g.createNode(0, nodes::A), g.createNode(4, nodes::B));
-	g.addEdge(g.createNode(0, nodes::A), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::C));
-	g.addEdge(g.createNode(4, nodes::B), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(8, nodes::C), g.createNode(7, nodes::D));
-	g.addEdge(g.createNode(8, nodes::C), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(7, nodes::D), g.createNode(9, nodes::E));
-	g.addEdge(g.createNode(7, nodes::D), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(9, nodes::E), g.createNode(4, nodes::F));
-	g.addEdge(g.createNode(4, nodes::F), g.createNode(2, nodes::G));
-	g.addEdge(g.createNode(2, nodes::G), g.createNode(8, nodes::H));
-	g.addEdge(g.createNode(2, nodes::G), g.createNode(2, nodes::I));
-	g.addEdge(g.createNode(8, nodes::H), g.createNode(2, nodes::I));
+	addEdge(g, createNode(0, nodes::A), createNode(4, nodes::B));
+	addEdge(g, createNode(0, nodes::A), createNode(8, nodes::H));
+	addEdge(g, createNode(4, nodes::B), createNode(8, nodes::C));
+	addEdge(g, createNode(4, nodes::B), createNode(8, nodes::H));
+	addEdge(g, createNode(8, nodes::C), createNode(7, nodes::D));
+	addEdge(g, createNode(8, nodes::C), createNode(4, nodes::F));
+	addEdge(g, createNode(7, nodes::D), createNode(9, nodes::E));
+	addEdge(g, createNode(7, nodes::D), createNode(4, nodes::F));
+	addEdge(g, createNode(9, nodes::E), createNode(4, nodes::F));
+	addEdge(g, createNode(4, nodes::F), createNode(2, nodes::G));
+	addEdge(g, createNode(2, nodes::G), createNode(8, nodes::H));
+	addEdge(g, createNode(2, nodes::G), createNode(2, nodes::I));
+	addEdge(g, createNode(8, nodes::H), createNode(2, nodes::I));
 
 	std::vector<int> path;
 
